@@ -68,8 +68,7 @@ void dfs(int v, vector<vector<int>>&adj, uf &unionfind){
 
 
 int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(0);
+    ofstream out("./res1.txt");
     int v,e;
     cin>>v>>e;
     vector<vector<int>> adj(v+1);
@@ -81,7 +80,7 @@ int main(){
     }
     uf unionfind(v+1);
     for(int i=1;i<=v;i++){
-        if(visited[v])
+        if(visited[i])
             continue;
         dfs(i,adj,unionfind);
     }
@@ -100,7 +99,7 @@ int main(){
             }
         }
     }
-    cout<<cnt<<'\n';
+    out<<cnt<<'\n';
     memset(visited,0,sizeof(visited));
     for(int i=1;i<=v;i++){
         if(visited[i])
@@ -110,9 +109,10 @@ int main(){
             int tmp2 = unionfind.find(j);
             if(tmp2 == tmp){
                 visited[j]=1;
-                cout<<j<<' ';
+                out<<j<<' ';
             }
         }
-        cout<<-1<<'\n';
+        out<<-1<<'\n';
     }
+    
 }
