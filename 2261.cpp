@@ -2,21 +2,21 @@
 #include<algorithm>
 #include<vector>
 using namespace std;
-typedef pair<int,int> pii;
+typedef pair<long long,long long> pll;
 
-pii points[100000];
+pll points[100000];
 
-bool comp(pii& a, pii& b){
+bool comp(pll& a, pll& b){
     return a.second<b.second;
 }
 
-int calcDist(pii& a, pii& b){
+long long calcDist(pll& a, pll& b){
     return (a.first-b.first)*(a.first-b.first)+(a.second-b.second)*(a.second-b.second);
 }
 
 int findMin(int start, int end){
     if(end-start<=2){
-        int m=0xfffffff;
+        long long m=0xfffffffffffffff;
         for(int i=start;i<end;i++){
             for(int j=i+1;j<=end;j++){
                 m = min(m,calcDist(points[i], points[j]));
@@ -25,9 +25,9 @@ int findMin(int start, int end){
         return m;
     }
     int mid = (start+end)/2;
-    int minv = min(findMin(start,mid), findMin(mid+1, end));
-    int margin = minv;
-    vector<pii> v;
+    long long minv = min(findMin(start,mid), findMin(mid+1, end));
+    long long margin = minv;
+    vector<pll> v;
     for(int i = mid; i>=start && (points[mid].first-points[i].first)*(points[mid].first-points[i].first) < margin; i--){
         v.push_back(points[i]);
     }
