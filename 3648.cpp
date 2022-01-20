@@ -7,34 +7,24 @@ using namespace std;
 void scc(int now, vector<vector<int>> &components, vector<bool> &visited, vector<vector<int>> &adj, vector<vector<int>> &rev, bool reverse, int sccNow, stack<int> &s){
     visited[now] = true;
     if(!reverse){
-        s.push(now);
         for(int& i : adj[now]){
             if(visited[i])  continue;
             scc(i,components,visited,adj,rev,reverse,sccNow,s);
         }
+        s.push(now);
     }
     else{
+        components[sccNow].push_back(now);
         for(int& i : rev[now]){
             if(visited[i])  continue;
-            components[sccNow].push_back(now);
             scc(i,components,visited,adj,rev,reverse,sccNow,s);
         }
     }
 
 }
 
-void dfsFor1(int now, vector<vector<int>> &components, vector<bool> &visited, vector<vector<int>> &adj){
-    components[0].push_back(now);
-    visited[now]=true;
-    for(int& i : adj[now]){
-        if(visited[i])  continue;
-        dfsFor1(i,components,visited,adj);
-    }
-}
 
 void solve(int n, int m){
-
-    vector<bool> var(n*2+1);
     vector<vector<int>> adj(2*n+1);
     vector<vector<int>> rev(2*n+1);
     vector<vector<int>> components;
@@ -42,23 +32,23 @@ void solve(int n, int m){
     stack<int> s;
     for(int i=0;i<m;i++){
         int a,b;
-        cin>>a>>b; // not: 2*n-var
-        a*=-1;
-        if(a<0) a+=2*n+1;
-        if(b<0) b+=2*n+1;
-        adj[a].push_back(b);
-        rev[b].push_back(a);
+        cin>>a>>b; // not: 2*n+1-var
+        adj[(a*-1+2*n+1)%(2*n+1)].push_back((b+2*n+1)%(2*n+1));
+        adj[(b*-1+2*n+1)%(2*n+1)].push_back((a+(2*n+1))%(2*n+1));
+        rev[(b+2*n+1)%(2*n+1)].push_back((a*-1+2*n+1)%(2*n+1));
+        rev[(a+(2*n+1))%(2*n+1)].push_back((b*-1+2*n+1)%(2*n+1));
+        
     }
-    for(int i=1;i<=n;i++){
+    adj[2*n].push_back(1);
+    rev[1].push_back(2*n);
+    for(int i=1;i<=2*n;i++){
         if(!visited[i]){
             scc(i,components,visited,adj,rev,false,-1,s);
         }
     }
     
     visited = vector<bool>(2*n+1);
-    components.push_back(vector<int>());
-    dfsFor1(1,components,visited,adj);
-    int now = 0;
+    int now = -1;
     while(!s.empty()){
         if(visited[s.top()]){
             s.pop();
@@ -68,12 +58,19 @@ void solve(int n, int m){
         components.push_back(vector<int>());
         scc(s.top(),components,visited,adj,rev,true,now,s);
         s.pop();
-    }
-    visited = vector<bool>(2*n+1);
+    }/*
+    for(auto& i:components){
+        for(auto j : i){
+            cout<<j<<' ';
+        }
+        cout<<'\n';
+    }*/
     for(vector<int>& i : components){
+        visited = vector<bool>(2*n+1);
         for(int& j : i){
             visited[j]=true;
             if(visited[2*n+1-j]==true){
+                //cout<<j;
                 cout<<"no\n";
                 return;
             }
